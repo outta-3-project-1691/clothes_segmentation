@@ -117,7 +117,6 @@ class U2NET(nn.Module):
         unet(x)
         out = fuse()
         del maps, x
-
         return out
 
     def _make_layers(self, cfgs):
