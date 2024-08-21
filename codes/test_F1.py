@@ -32,7 +32,7 @@ def calculate_f1(preds, targets, num_classes):
         f1_scores.append(f1)
 
     # 전체 평균 F1 스코어 반환
-    return sum(f1_scores) / num_classes
+    return torch.mean(torch.tensor(f1_scores)).item()
 
 def evaluate_F1(model, dataloader, num_classes=7, device='cpu'):
     model.eval()
