@@ -110,14 +110,15 @@ class U2NET(nn.Module):
             x = torch.cat(maps, 1)
             x = getattr(self, 'outconv')(x)
             maps.insert(0, x)
-            
+            x = getattr(self, 'outsum')(torch.cat([x.unsqueeze(1) for x in maps], dim = 1))
             # 수정 부분
-            return torch.cat([x.unsqueeze(1) for x in maps], dim = 1)
+            return x.squeeze(1)
 
         unet(x)
-        maps = fuse()
-        out = getattr(self, 'outsum')(maps)
-        return out.squeeze(1)
+        out = fuse()
+        del maps, x
+
+        return out
 
     def _make_layers(self, cfgs):
         self.height = int((len(cfgs) + 1) / 2)
