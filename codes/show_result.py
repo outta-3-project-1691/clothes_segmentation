@@ -22,3 +22,15 @@ def show_segment(image_tensor):
     plt.imshow(color_image)
     plt.axis('off')  # 축 제거
     plt.show()
+
+def show_test_output(model, x, label, device = 'cpu'):
+    show_segment(label)
+    with torch.no_grad():
+        model.eval()
+        output = model(x.unsqueeze(0).to(device))
+        output = torch.softmax(output, dim = 1).squeeze(0)
+        image = torch.zeros((128, 128))
+        for i in range(7):
+            out = output[i]
+            image[out > 0.9] = i
+        show_segment(image)
