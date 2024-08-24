@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from torch.functional import F
 
 def show_segment(image_tensor):
     colors = {
@@ -28,9 +29,6 @@ def show_test_output(model, x, label, device = 'cpu'):
     with torch.no_grad():
         model.eval()
         output = model(x.unsqueeze(0).to(device))
-        output = torch.softmax(output, dim = 1).squeeze(0)
-        image = torch.zeros((128, 128))
-        for i in range(7):
-            out = output[i]
-            image[out > 0.9] = i
-        show_segment(image)
+        output = torch.argmax(F.softmax(output, dim=1), dim=1)  # preds: [b, 128, 128]
+
+        show_segment(output.squeeze().to('cpu'))
